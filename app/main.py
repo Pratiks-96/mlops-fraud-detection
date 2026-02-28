@@ -4,7 +4,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
 import time
-import random
 
 from app.metrics import (
     PREDICTION_REQUESTS,
@@ -21,23 +20,34 @@ templates = Jinja2Templates(directory="app/templates")
 history = []
 
 
-# Example fraud logic (replace with real model)
+# ✅ Improved fraud probability calculation
 def predict_fraud(amount, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest):
 
-    risk = 0
+    score = 0.0
 
-    if amount > 50000:
-        risk += 0.4
+    # Feature 1: Amount ratio risk
+    if oldbalanceOrg > 0:
+        amount_ratio = amount / oldbalanceOrg
+        score += min(amount_ratio, 1.0) * 0.4
 
-    if oldbalanceOrg - newbalanceOrig != amount:
-        risk += 0.3
+    # Feature 2: Origin balance mismatch risk
+    expected_orig = oldbalanceOrg - amount
+    orig_error = abs(expected_orig - newbalanceOrig)
 
-    if newbalanceDest > oldbalanceDest + amount:
-        risk += 0.3
+    orig_error_ratio = orig_error / max(oldbalanceOrg, 1)
+    score += min(orig_error_ratio, 1.0) * 0.3
 
-    probability = min(risk, 0.99)
+    # Feature 3: Destination balance anomaly risk
+    expected_dest = oldbalanceDest + amount
+    dest_error = abs(expected_dest - newbalanceDest)
 
-    fraud = probability > 0.5
+    dest_error_ratio = dest_error / max(amount, 1)
+    score += min(dest_error_ratio, 1.0) * 0.3
+
+    # Normalize probability
+    probability = min(max(score, 0.0), 1.0)
+
+    fraud = probability >= 0.5
 
     return fraud, probability
 
@@ -86,6 +96,8 @@ async def predict(
 
     result = "Fraud" if fraud else "Normal"
 
+    probability_percent = round(probability * 100, 2)
+
     data = {
         "amount": amount,
         "oldbalanceOrg": oldbalanceOrg,
@@ -93,7 +105,7 @@ async def predict(
         "oldbalanceDest": oldbalanceDest,
         "newbalanceDest": newbalanceDest,
         "result": result,
-        "probability": round(probability * 100, 2)
+        "probability": probability_percent
     }
 
     history.append(data)
