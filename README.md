@@ -76,11 +76,10 @@ mlops-fraud-detection/
 │   ├── train.py             # Model training script
 │   ├── metrics.py           # Prometheus metrics
 │
-├── data/
-│   └── fraud_data.csv       # Training dataset
 │
-├── model/
+├── training/
 │   └── fraud_model.pkl      # Trained model
+    └── fraud_data.csv       # Training datase
 │
 ├── Dockerfile
 ├── requirements.txt
