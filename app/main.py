@@ -2,7 +2,9 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from app.metrics import metrics_endpoint
+#from app.metrics import metrics_endpoint
+from fastapi import Response
+from app.metrics import get_metrics
 import time
 
 from app.metrics import (
