@@ -1,7 +1,10 @@
+
+
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: fraud-detection-monitor
+  namespace: monitoring
   labels:
     release: prometheus
 spec:
@@ -9,9 +12,6 @@ spec:
     matchLabels:
       app: fraud-detection
   endpoints:
-  - port: http
-    path: /metrics
-    interval: 5s
-  namespaceSelector:
-    matchNames:
-    - fraud
+    - port: http
+      path: /metrics
+      interval: 10s
