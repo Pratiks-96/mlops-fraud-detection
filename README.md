@@ -83,10 +83,10 @@ mlops-fraud-detection/
 │
 ├── Dockerfile
 ├── requirements.txt
-├── kubernetes/
+├── k8s/
 │   ├── deployment.yaml
 │   ├── service.yaml
-│   └── servicemonitor.yaml
+│   
 │
 └── README.md
 ```
