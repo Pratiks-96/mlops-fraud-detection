@@ -2,12 +2,12 @@
 <html>
 <head>
 
-<title>Fraud Detection Dashboard</title>
+<title>Fraud Detection Production Dashboard</title>
 
 <link rel="stylesheet" href="/static/style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="/static/dashboard.js"></script>
 
 </head>
 
@@ -15,53 +15,51 @@
 
 <h1>Fraud Detection Dashboard</h1>
 
+
 <div class="card">
 
 <form method="post" action="/predict">
 
-    Amount:
-    <input type="number" name="amount" required>
+Amount:
+<input type="number" name="amount" required><br><br>
 
-    <button type="submit">Predict</button>
+Old Balance Org:
+<input type="number" name="oldbalanceOrg" required><br><br>
+
+New Balance Orig:
+<input type="number" name="newbalanceOrig" required><br><br>
+
+Old Balance Dest:
+<input type="number" name="oldbalanceDest" required><br><br>
+
+New Balance Dest:
+<input type="number" name="newbalanceDest" required><br><br>
+
+<button type="submit">Predict</button>
 
 </form>
 
 </div>
 
 
-{% if result %}
+{% if prediction %}
 
 <div class="card">
 
-<h2>Prediction Result:</h2>
+<h2>Prediction Result</h2>
 
-<p class="{{ 'fraud' if result=='Fraud' else 'normal' }}">
-    {{ result }}
+<p class="{{ 'fraud' if prediction.result=='Fraud' else 'normal' }}">
+Fraud: {{ prediction.result }} |
+Probability: {{ prediction.probability }}%
 </p>
 
-<p>Fraud Probability: {{ probability }}%</p>
-
-<canvas id="chart" width="400" height="200"></canvas>
+<canvas id="probChart"></canvas>
 
 </div>
 
 <script>
 
-const probability = {{ probability }}
-
-new Chart(document.getElementById('chart'), {
-
-    type: 'bar',
-
-    data: {
-        labels: ['Fraud Probability'],
-        datasets: [{
-            label: 'Probability %',
-            data: [probability],
-        }]
-    },
-
-});
+createProbabilityChart({{ prediction.probability }})
 
 </script>
 
@@ -70,7 +68,16 @@ new Chart(document.getElementById('chart'), {
 
 <div class="card">
 
-<h2>Prediction History</h2>
+<h2>Realtime Prediction History</h2>
+
+<canvas id="historyChart"></canvas>
+
+</div>
+
+
+<div class="card">
+
+<h2>Prediction Table</h2>
 
 <table>
 
@@ -83,15 +90,9 @@ new Chart(document.getElementById('chart'), {
 {% for item in history %}
 
 <tr>
-
 <td>{{ item.amount }}</td>
-
-<td class="{{ 'fraud' if item.result=='Fraud' else 'normal' }}">
-{{ item.result }}
-</td>
-
+<td>{{ item.result }}</td>
 <td>{{ item.probability }}%</td>
-
 </tr>
 
 {% endfor %}
@@ -99,7 +100,6 @@ new Chart(document.getElementById('chart'), {
 </table>
 
 </div>
-
 
 </body>
 </html>
