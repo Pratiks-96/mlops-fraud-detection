@@ -1,27 +1,25 @@
 from prometheus_client import Counter, Histogram, Gauge
 
-# total predictions
-prediction_counter = Counter(
-    "fraud_predictions_total",
-    "Total number of predictions"
+# Total prediction requests
+PREDICTION_REQUESTS = Counter(
+    "fraud_prediction_requests_total",
+    "Total fraud prediction requests"
 )
 
-# fraud predictions
-fraud_counter = Counter(
-    "fraud_detected_total",
+# Fraud detected counter
+FRAUD_PREDICTIONS = Counter(
+    "fraud_predictions_total",
     "Total fraud predictions"
 )
 
-# prediction latency
-prediction_latency = Histogram(
-    "prediction_latency_seconds",
+# Prediction latency
+PREDICTION_LATENCY = Histogram(
+    "fraud_prediction_latency_seconds",
     "Prediction latency"
 )
 
-# app health
-app_health = Gauge(
-    "app_health_status",
-    "Application health status"
+# Model health
+MODEL_LOADED = Gauge(
+    "fraud_model_loaded",
+    "Model loaded status"
 )
-
-app_health.set(1)
