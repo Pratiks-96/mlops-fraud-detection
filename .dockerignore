@@ -1,0 +1,5 @@
+.git
+.github
+training
+__pycache__
+*.pyc
