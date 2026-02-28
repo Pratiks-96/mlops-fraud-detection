@@ -9,7 +9,7 @@ mlops-fraud-detection/
 │   └── fraud_model.pkl     ← already trained model
 │
 ├── k8s/
-│   ├── deployment.yaml
+│   ├── deployment.yaml    ...?
 │   ├── service.yaml
 │
 ├── .github/workflows/
