@@ -4,31 +4,34 @@ from fastapi import Response
 # Total prediction requests
 PREDICTION_REQUESTS = Counter(
     "fraud_prediction_requests_total",
-    "Total fraud prediction requests"
+    "Total number of fraud prediction requests"
 )
 
-# Fraud detected counter
+# Fraud predictions count
 FRAUD_PREDICTIONS = Counter(
     "fraud_predictions_total",
-    "Total fraud predictions"
+    "Total number of fraud detected predictions"
 )
 
-# Prediction latency
+# Latency histogram
 PREDICTION_LATENCY = Histogram(
     "fraud_prediction_latency_seconds",
-    "Prediction latency in seconds"
+    "Time spent processing prediction"
 )
 
-# Model health status
+# Model health
 MODEL_LOADED = Gauge(
     "fraud_model_loaded",
     "Model loaded status (1=loaded, 0=not loaded)"
 )
 
+# Set model loaded
+MODEL_LOADED.set(1)
 
-# Function to expose metrics endpoint
-def metrics_endpoint():
+
+# Metrics endpoint function
+def metrics():
     return Response(
-        content=generate_latest(),
+        generate_latest(),
         media_type=CONTENT_TYPE_LATEST
     )
