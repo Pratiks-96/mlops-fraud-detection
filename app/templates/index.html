@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fraud Detection Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .fraud {
+            color: red;
+            font-weight: bold;
+        }
+
+        .normal {
+            color: green;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid gray;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>Fraud Detection Dashboard</h1>
+
+<div class="card">
+
+<form method="post" action="/predict">
+
+    Amount:
+    <input type="number" name="amount" required>
+
+    <button type="submit">Predict</button>
+
+</form>
+
+</div>
+
+
+{% if result %}
+
+<div class="card">
+
+<h2>Prediction Result:</h2>
+
+<p class="{{ 'fraud' if result=='Fraud' else 'normal' }}">
+    {{ result }}
+</p>
+
+<p>Fraud Probability: {{ probability }}%</p>
+
+<canvas id="chart" width="400" height="200"></canvas>
+
+</div>
+
+<script>
+
+const probability = {{ probability }}
+
+new Chart(document.getElementById('chart'), {
+
+    type: 'bar',
+
+    data: {
+        labels: ['Fraud Probability'],
+        datasets: [{
+            label: 'Probability %',
+            data: [probability],
+        }]
+    },
+
+});
+
+</script>
+
+{% endif %}
+
+
+<div class="card">
+
+<h2>Prediction History</h2>
+
+<table>
+
+<tr>
+<th>Amount</th>
+<th>Result</th>
+<th>Probability</th>
+</tr>
+
+{% for item in history %}
+
+<tr>
+
+<td>{{ item.amount }}</td>
+
+<td class="{{ 'fraud' if item.result=='Fraud' else 'normal' }}">
+{{ item.result }}
+</td>
+
+<td>{{ item.probability }}%</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+
+</body>
+</html>
