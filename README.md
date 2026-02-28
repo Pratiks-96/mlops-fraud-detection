@@ -1,4 +1,3 @@
-# mlops-fraud-detection
 mlops-fraud-detection/
 │
 ├── app/
@@ -7,20 +6,15 @@ mlops-fraud-detection/
 │   ├── predict.py
 │
 ├── model/
-│   ├── train.py
-│   ├── fraud_model.pkl
-│
-├── data/
-│   ├── fraud.csv
+│   └── fraud_model.pkl     ← already trained model
 │
 ├── k8s/
 │   ├── deployment.yaml
 │   ├── service.yaml
 │
 ├── .github/workflows/
-│   ├── docker-build.yml
+│   └── ci.yml
 │
 ├── requirements.txt
 ├── Dockerfile
-├── .dockerignore
-└── README.md
+└── .dockerignore
