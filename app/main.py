@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-
+from app.metrics import metrics_endpoint
 import time
 
 from app.metrics import (
@@ -123,3 +123,8 @@ async def predict(
 @app.get("/api/history")
 async def get_history():
     return JSONResponse(history)
+
+
+@app.get("/metrics")
+async def metrics():
+    return metrics_endpoint()
