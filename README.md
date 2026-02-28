@@ -78,8 +78,8 @@ mlops-fraud-detection/
 │
 │
 ├── training/
-│   └── fraud_model.pkl      # Trained model
-    └── fraud_data.csv       # Training datase
+│   └── train.py      # Trained model
+    └── fraud.csv       # Training datase
 │
 ├── Dockerfile
 ├── requirements.txt
