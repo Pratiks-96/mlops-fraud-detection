@@ -127,4 +127,7 @@ async def get_history():
 
 @app.get("/metrics")
 async def metrics():
-    return metrics_endpoint()
+    return Response(
+        content=get_metrics(),
+        media_type="text/plain"
+    )
