@@ -98,5 +98,8 @@ Copy FULL JSON below and paste:
 }
 
 click : Load
+<img width="1348" height="672" alt="image" src="https://github.com/user-attachments/assets/13515fc8-d23c-4396-be35-d0c55fac5026" />
+<img width="1355" height="666" alt="image" src="https://github.com/user-attachments/assets/c9ff8f23-761f-4157-80d0-0236cd223c5d" />
+
 
 
