@@ -1,105 +1,355 @@
-This is mlops microservice it can predict the number based on the input values we updated the csv file for the building or traning the module 
-<img width="1359" height="677" alt="image" src="https://github.com/user-attachments/assets/a9991101-fdc2-4182-aca7-055009bd00f8" />
+# Fraud Detection MLOps Microservice with Prometheus & Grafana Monitoring
 
-Add Prometheus datasource
-Connections → Data sources → Prometheus
-URL:(note : if promethus running on same server or same k8s cluster then use this url :  http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090 )
-click : Save & Test
+## Overview
 
+This project is a **production-ready MLOps microservice** that provides real-time fraud prediction based on input values. The system supports:
 
-Option 1 — Import via JSON (Recommended)
-Step 1 — Click
-Dashboards → Import
-Import via grafana.com
-Import via JSON
-Upload JSON file
-Import via JSON
+* Model training using updated CSV datasets
+* REST API for real-time predictions
+* Kubernetes deployment for scalability
+* Prometheus monitoring for metrics collection
+* Grafana dashboards for visualization
+* Full observability of model performance and health
 
-Copy FULL JSON below and paste:
+This architecture follows **DevOps and MLOps best practices** for monitoring, scalability, and reliability.
 
+---
+
+## Architecture
+
+```
+                ┌──────────────┐
+                │   Client     │
+                │ (API Call)   │
+                └──────┬───────┘
+                       │
+                       ▼
+              ┌──────────────────┐
+              │ ML Prediction API│
+              │ (FastAPI/Flask) │
+              └──────┬──────────┘
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+   ML Model     Prometheus     CSV Dataset
+ (Trained)      Metrics        (Training)
+
+        ▼
+   Grafana Dashboard
+   (Visualization)
+```
+
+---
+
+## Features
+
+* Real-time fraud prediction via REST API
+* Model training using CSV dataset
+* Automatic metrics exposure for monitoring
+* Prometheus integration
+* Grafana dashboard visualization
+* Kubernetes-ready deployment
+* Production-ready observability
+
+---
+
+## Tech Stack
+
+* Python
+* FastAPI / Flask
+* Scikit-learn
+* Docker
+* Kubernetes
+* Prometheus
+* Grafana
+
+---
+
+## Project Structure
+
+```
+mlops-fraud-detection/
+│
+├── app/
+│   ├── main.py              # Prediction API
+│   ├── model.py             # Model loading
+│   ├── train.py             # Model training script
+│   ├── metrics.py           # Prometheus metrics
+│
+├── data/
+│   └── fraud_data.csv       # Training dataset
+│
+├── model/
+│   └── fraud_model.pkl      # Trained model
+│
+├── Dockerfile
+├── requirements.txt
+├── kubernetes/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── servicemonitor.yaml
+│
+└── README.md
+```
+
+---
+
+## Model Training
+
+When the CSV file is updated, retrain the model:
+
+```bash
+python train.py
+```
+
+This will:
+
+* Load CSV dataset
+* Train ML model
+* Save model as:
+
+```
+model/fraud_model.pkl
+```
+
+---
+
+## Running the Microservice Locally
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run API:
+
+```bash
+python main.py
+```
+
+API will run at:
+
+```
+http://localhost:8000
+```
+
+---
+
+## Prediction API
+
+### Endpoint
+
+```
+POST /predict
+```
+
+### Example Request
+
+```json
 {
-  "title": "Fraud Detection MLOps Dashboard",
-  "timezone": "browser",
-  "panels": [
-    {
-      "type": "stat",
-      "title": "Total Prediction Requests",
-      "targets": [
-        {
-          "expr": "fraud_prediction_requests_total"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "Fraud Predictions",
-      "targets": [
-        {
-          "expr": "fraud_predictions_total"
-        }
-      ],
-      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "Fraud Rate %",
-      "targets": [
-        {
-          "expr": "(fraud_predictions_total / fraud_prediction_requests_total) * 100"
-        }
-      ],
-      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "stat",
-      "title": "Model Health",
-      "targets": [
-        {
-          "expr": "fraud_model_loaded"
-        }
-      ],
-      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }
-    },
-    {
-      "type": "timeseries",
-      "title": "Prediction Requests/sec",
-      "targets": [
-        {
-          "expr": "rate(fraud_prediction_requests_total[1m])"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }
-    },
-    {
-      "type": "timeseries",
-      "title": "Fraud Detection/sec",
-      "targets": [
-        {
-          "expr": "rate(fraud_predictions_total[1m])"
-        }
-      ],
-      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }
-    },
-    {
-      "type": "timeseries",
-      "title": "Prediction Latency (95%)",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, rate(fraud_prediction_latency_seconds_bucket[5m]))"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 }
-    }
-  ],
-  "schemaVersion": 36,
-  "version": 1,
-  "refresh": "5s"
+  "feature1": 100,
+  "feature2": 200,
+  "feature3": 300
 }
+```
 
-click : Load
-<img width="1348" height="672" alt="image" src="https://github.com/user-attachments/assets/13515fc8-d23c-4396-be35-d0c55fac5026" />
-<img width="1355" height="666" alt="image" src="https://github.com/user-attachments/assets/c9ff8f23-761f-4157-80d0-0236cd223c5d" />
+### Example Response
+
+```json
+{
+  "prediction": 1
+}
+```
+
+---
+
+## Prometheus Metrics Endpoint
+
+```
+GET /metrics
+```
+
+Example metrics exposed:
+
+```
+fraud_prediction_requests_total
+fraud_predictions_total
+fraud_prediction_latency_seconds
+fraud_model_loaded
+```
+
+---
+
+## Kubernetes Deployment
+
+Apply manifests:
+
+```bash
+kubectl apply -f kubernetes/
+```
+
+Verify pods:
+
+```bash
+kubectl get pods
+```
+
+---
+
+## Prometheus Configuration
+
+If Prometheus is running in the same Kubernetes cluster, use:
+
+```
+http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+```
+
+---
+
+## Grafana Dashboard Setup
+
+### Step 1 — Add Prometheus Data Source
+
+Go to:
+
+```
+Grafana → Connections → Data Sources → Prometheus
+```
+
+URL:
+
+```
+http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+```
+
+Click:
+
+```
+Save & Test
+```
+
+---
+
+### Step 2 — Import Dashboard
+
+Go to:
+
+```
+Dashboards → Import
+```
+
+Select:
+
+```
+Import via JSON
+```
+updated the json file in github repo with name  grafana-dashboard.json
+.
+
+Click:
+
+```
+Load → Import
+```
+
+---
+
+## Dashboard Metrics
+
+The dashboard shows:
+
+* Total Prediction Requests
+* Fraud Predictions
+* Fraud Rate %
+* Model Health Status
+* Prediction Requests per second
+* Fraud Detection rate
+* Prediction latency (95th percentile)
+
+<img width="1347" height="677" alt="image" src="https://github.com/user-attachments/assets/8d748350-5847-4eff-bb86-d331c002b354" />
+
+<img width="1346" height="673" alt="image" src="https://github.com/user-attachments/assets/b0e84589-13f8-4fcc-bb03-16e5980ca9b5" />
+
+---
+
+## Monitoring Example
+
+You can monitor:
+
+* API usage
+* Model performance
+* Prediction latency
+* Fraud detection trends
+* System health
+
+---
+
+## Retraining Workflow
+
+When dataset updates:
+
+```
+Update CSV → Run train.py → Deploy new model → Monitor in Grafana
+```
+
+---
+
+## Production Deployment Flow
+
+```
+Developer → Update Dataset
+         → Train Model
+         → Build Docker Image
+         → Deploy to Kubernetes
+         → Prometheus collects metrics
+         → Grafana visualizes metrics
+```
+
+---
+
+## Screenshots
+
+Dashboard Example:
+
+* Prediction metrics
+* Fraud rate visualization
+* Model health monitoring
+
+<img width="1355" height="678" alt="image" src="https://github.com/user-attachments/assets/ff58acc0-f242-4a0d-a2e2-938665f50ff6" />
+<img width="1343" height="678" alt="image" src="https://github.com/user-attachments/assets/268fe9db-023d-4d0d-8066-f51dcdba946a" />
+<img width="1354" height="668" alt="image" src="https://github.com/user-attachments/assets/059d31ab-882f-4587-8648-86ac48c0d282" />
 
 
 
+---
+
+## Future Improvements
+
+* CI/CD pipeline integration
+* Automated retraining pipeline
+* Model versioning
+* Alertmanager integration
+* Canary deployments
+
+---
+
+## Author
+
+pratik
+DevOps | MLOps Engineer
+
+---
+
+## Summary
+
+This project demonstrates a complete **production-grade MLOps microservice** with:
+
+* Model training
+* Real-time prediction
+* Kubernetes deployment
+* Prometheus monitoring
+* Grafana visualization
+* Full observability
+
+This setup is suitable for real-world enterprise deployment.
