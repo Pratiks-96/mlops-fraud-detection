@@ -59,7 +59,7 @@ spec:
     #if replics goes down to 1 then 
     - alert: FraudServiceLowReplicas
       expr: kube_deployment_status_replicas_available{namespace="default", deployment="fraud-detection-deployment"} == 1
-      for: 1m
+      for: 10s
       labels:
         severity: critical
       annotations:
