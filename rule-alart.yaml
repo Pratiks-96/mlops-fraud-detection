@@ -4,16 +4,16 @@ metadata:
   name: fraud-detection-alerts
   namespace: monitoring
   labels:
-    release: monitoring   # must match helm release
+    release: kube-prometheus
 spec:
   groups:
   - name: fraud-detection.rules
     rules:
     - alert: FraudServiceDown
-      expr: up{job="fraud-detection-service", namespace="default"} == 0
+      expr: up{job="fraud-detection-service"} == 0
       for: 1m
       labels:
         severity: critical
       annotations:
         summary: "Fraud Detection Service is DOWN"
-        description: "One of the fraud detection pods is not responding."
+        description: "Fraud detection pod is not responding"
