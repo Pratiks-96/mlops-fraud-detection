@@ -4,16 +4,48 @@ metadata:
   name: fraud-detection-alerts
   namespace: monitoring
   labels:
-    release: kube-prometheus
+    release: prometheus
 spec:
   groups:
   - name: fraud-detection.rules
     rules:
+
+    # 1️⃣ Pod Down Alert
     - alert: FraudServiceDown
-      expr: up{job="fraud-detection-service"} == 0
+      expr: sum(up{namespace="default", pod=~"fraud-detection-deployment.*", container="fraud-container"}) == 0
       for: 1m
       labels:
         severity: critical
       annotations:
         summary: "Fraud Detection Service is DOWN"
-        description: "Fraud detection pod is not responding"
+        description: "All fraud-detection pods are not responding"
+
+    # 2️⃣ High CPU Alert
+    - alert: FraudServiceHighCPU
+      expr: sum(rate(container_cpu_usage_seconds_total{namespace="default", pod=~"fraud-detection-deployment.*", container="fraud-container"}[1m])) > 0.5
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage in Fraud Detection Service"
+        description: "CPU usage exceeded 50% for 1 minute"
+
+    # 3️⃣ High Memory Alert
+    - alert: FraudServiceHighMemory
+      expr: sum(container_memory_working_set_bytes{namespace="default", pod=~"fraud-detection-deployment.*", container="fraud-container"}) > 500000000
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High Memory usage in Fraud Detection Service"
+        description: "Memory usage exceeded 500MB"
+
+    # 4️⃣ Frequent Pod Restarts
+    - alert: FraudServiceRestarting
+      expr: increase(kube_pod_container_status_restarts_total{namespace="default", pod=~"fraud-detection-deployment.*"}[5m]) > 2
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Fraud Detection pods restarting frequently"
+        description: "Pod restarted more than 2 times in last 5 minutes"
