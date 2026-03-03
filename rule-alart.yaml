@@ -49,3 +49,10 @@ spec:
       annotations:
         summary: "Fraud Detection pods restarting frequently"
         description: "Pod restarted more than 2 times in last 5 minutes"
+    - alert: TestAlert
+      expr: vector(1)
+      for: 10s
+      labels:
+        severity: critical
+      annotations:
+        summary: "Test alert is firing"
