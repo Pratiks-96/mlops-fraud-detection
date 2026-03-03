@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: fraud-detection-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring   # must match helm release
+spec:
+  groups:
+  - name: fraud-detection.rules
+    rules:
+    - alert: FraudServiceDown
+      expr: up{job="fraud-detection-service", namespace="default"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Fraud Detection Service is DOWN"
+        description: "One of the fraud detection pods is not responding."
