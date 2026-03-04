@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: ai-analyzer-config
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  route:
+    receiver: "ai-analyzer"
+    groupBy: ["alertname"]
+    groupWait: 10s
+    groupInterval: 30s
+    repeatInterval: 1h
+
+  receivers:
+  - name: "ai-analyzer"
+    webhookConfigs:
+    - url: "http://ai-analyzer-service.default.svc.cluster.local/webhook"
+      sendResolved: true
