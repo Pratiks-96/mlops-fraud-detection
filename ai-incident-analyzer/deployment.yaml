@@ -20,7 +20,10 @@ spec:
         - containerPort: 5000
         env:
         - name: LLM_API_KEY
-          value: "your-openai-api-key"
+          valueFrom:
+            secretKeyRef:
+              name: llm-secret
+              key: LLM_API_KEY
         volumeMounts:
         - mountPath: /data
           name: storage
