@@ -352,3 +352,8 @@ This project demonstrates a complete **production-grade MLOps microservice** wit
 * Full observability
 
 This setup is suitable for real-world enterprise deployment.
+
+
+here also update the llm based things where it any alarts get  triggerd then this will collect all the information and send to openai and then will get solution from them 
+kubectl create secret generic llm-secret \
+  --from-literal=LLM_API_KEY="your open ai key"
