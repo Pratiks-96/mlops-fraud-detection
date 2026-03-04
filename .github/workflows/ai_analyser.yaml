@@ -44,7 +44,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/pratik6958/ai-analyzer-incident ./ai-incident-analyzer:latest
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/pratik6958/ai-analyzer-incident:latest ./ai-incident-analyzer
 
 
     - name: Push Docker image
