@@ -354,6 +354,10 @@ This project demonstrates a complete **production-grade MLOps microservice** wit
 This setup is suitable for real-world enterprise deployment.
 
 
+alert manager configured refer this image 
+<img width="1353" height="665" alt="image" src="https://github.com/user-attachments/assets/732b860f-1190-4e2b-9195-74c88dc64caf" />
+
+
 here also update the llm based things where it any alarts get  triggerd then this will collect all the information and send to openai and then will get solution from them 
 kubectl create secret generic llm-secret \
   --from-literal=LLM_API_KEY="your open ai key"
