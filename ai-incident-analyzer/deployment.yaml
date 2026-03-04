@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-incident-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-analyzer
+  template:
+    metadata:
+      labels:
+        app: ai-analyzer
+    spec:
+      serviceAccountName: ai-analyzer-sa
+      containers:
+      - name: analyzer
+        image: pratik6958/ai-analyzer-incident:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: LLM_API_KEY
+          value: "your-openai-api-key"
+        volumeMounts:
+        - mountPath: /data
+          name: storage
+      volumes:
+      - name: storage
+        emptyDir: {}
